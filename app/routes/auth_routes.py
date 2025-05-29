@@ -1,5 +1,5 @@
 from typing import Any
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.controllers.auth_controller import AuthController
@@ -20,4 +20,14 @@ async def signup_user(
     request: SignupUserRequest,
     auth_controller: AuthController = Depends(get_auth_controller)
     )-> UserResponse:
-    return auth_controller.signup_user(request)
+    try: 
+        return auth_controller.signup_user(request)
+    
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to signup user: {str(e)}"
+        )
+
