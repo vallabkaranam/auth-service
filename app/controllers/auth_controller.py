@@ -1,7 +1,9 @@
-
 from fastapi import HTTPException
 from password_validator import PasswordValidator
 from passlib.context import CryptContext
+
+from app.interfaces.user_interface import UserInterface
+from app.schemas.user_schemas import UserResponse
 
 
 schema = PasswordValidator()
@@ -15,8 +17,8 @@ schema \
 
 
 class AuthController:
-    # def __init__(self):
-    #     self
+    def __init__(self, user_interface: UserInterface):
+        self.user_interface = user_interface
 
     def signup_user(self, user_payload):
         """
@@ -25,8 +27,10 @@ class AuthController:
         If email and password are valid, encrypt password
         Then, create a new user with given details.
         """
-
         # check if email exists in database.
+        user_with_email = self.user_interface.get_user_by_email(user_payload.email)
+        if (user_with_email):
+            raise HTTPException(status_code=400, detail="Email already registered, log in instead")
 
         # check strength of password
         plain_text_password = user_payload.password
@@ -43,5 +47,19 @@ class AuthController:
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         hashed_password = pwd_context.hash(plain_text_password)
         
-        return pwd_context.verify(plain_text_password, hashed_password)
+        # Create new user
+        new_user = self.user_interface.create_user(
+            email=user_payload.email,
+            hashed_password=hashed_password,
+            first_name=user_payload.first_name,
+            last_name=user_payload.last_name
+        )
+        
+        # Convert to Pydantic model for response
+        return UserResponse(
+            id=new_user.id,
+            email=new_user.email,
+            first_name=new_user.first_name,
+            last_name=new_user.last_name
+        )
 

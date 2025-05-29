@@ -1,4 +1,8 @@
 fastapi
 uvicorn[standard]
-password-validator
-passlib[bcrypt]
+sqlalchemy
+alembic
+psycopg2-binary
+python-dotenv
+bcrypt
+pydantic
