@@ -4,7 +4,7 @@ from passlib.context import CryptContext
 
 from app.interfaces.user_interface import UserInterface
 from app.schemas.user_schemas import UserResponse
-from app.utils.jwt import create_access_token
+from app.utils.jwt import create_access_token, create_refresh_token
 
 
 schema = PasswordValidator()
@@ -103,10 +103,19 @@ class AuthController:
             "sub": user.email,
             "user_id": user.id    
             }
-        access_token, exp = create_access_token(token_data)
+        access_token, access_token_exp, access_token_iat = create_access_token(token_data)
+        refresh_token, refresh_token_exp, refresh_token_iat = create_refresh_token(token_data)
 
         return {
-            "access_token": access_token,
-            "expiration": exp
+            "access_token": {
+                "token": access_token,
+                "expiration": access_token_exp,
+                "iat": access_token_iat
+                },
+            "refresh_token": {
+                "token": refresh_token,
+                "expiration": refresh_token_exp,
+                "iat": refresh_token_iat
+            }
         }
 

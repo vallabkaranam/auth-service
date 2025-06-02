@@ -1,3 +1,4 @@
+from datetime import datetime
 from pydantic import BaseModel, Field
 
 
@@ -35,6 +36,28 @@ class LoginUserRequest(BaseModel):
     password: str = Field(...,
                           description="The password of the user",
                           example="Password123")
+    
+class TokenData(BaseModel):
+    token: str = Field(...,
+                       description="The token generated for the user",
+                        example="SAMPLE.TOKEN"
+                        )
+    expiration: datetime = Field(...,
+                            description="The expiration timestamp of the token",
+                            example="2025-06-02T22:38:30.935254+00:00")
+    
+    iat: datetime = Field(...,
+                     description="The issued at timestamp of the token",
+                     example="2025-06-02T22:38:30.935254+00:00")
+
+class LoginUserResponse(BaseModel):
+    access_token: TokenData = Field(...,
+                               description="Data about the short-lived access token generated for the user",
+                              )
+    
+    refresh_token: TokenData = Field(...,
+                                description="Data about the long-living token generated for the user to send to the refresh endpoint when access token expires",
+                                )
 
 
         
