@@ -1,10 +1,11 @@
+from datetime import datetime, timezone
 from fastapi import HTTPException
 from password_validator import PasswordValidator
 from passlib.context import CryptContext
 
 from app.interfaces.user_interface import UserInterface
 from app.schemas.user_schemas import UserResponse
-from app.utils.jwt import create_access_token, create_refresh_token
+from app.utils.jwt import create_access_token, create_refresh_token, decode_refresh_token
 
 
 schema = PasswordValidator()
@@ -118,4 +119,62 @@ class AuthController:
                 "iat": refresh_token_iat
             }
         }
+    
+    def refresh_user(self, refresh_payload):
+        """
+        Validate refresh token.
+        If valid, generate new access token and and refresh token
+        Return new access token and refresh token
+        """
+
+        payload = decode_refresh_token(refresh_payload.refresh_token)
+        now = datetime.now(timezone.utc)
+        exp_timestamp = payload.get("exp")  # This is an int
+        exp_datetime = datetime.fromtimestamp(exp_timestamp, tz=timezone.utc)        
+    
+        # check that the refresh token is active
+        if (now > exp_datetime):
+            raise HTTPException(
+                status=401,
+                detail="Refresh token has expired"
+            )
+        
+        # check if user is valid
+        user = self.user_interface.get_user_by_email(payload.get("sub"))
+        if not user:
+            raise HTTPException(
+                status=404,
+                detail="Cannot find user"
+            )
+        
+        if user.id != payload.get("user_id"):
+            raise HTTPException(
+                status=401,
+                detail="User does not match"
+            )
+        
+        token_data = {
+            "sub": payload.get("sub"),
+            "user_id": payload.get("user_id")
+        }
+
+        access_token, access_token_exp, access_token_iat = create_access_token(token_data)
+        refresh_token, refresh_token_exp, refresh_token_iat = create_refresh_token(token_data)
+
+        return {
+            "access_token": {
+                "token": access_token,
+                "expiration": access_token_exp,
+                "iat": access_token_iat
+                },
+            "refresh_token": {
+                "token": refresh_token,
+                "expiration": refresh_token_exp,
+                "iat": refresh_token_iat
+            }
+        }
+
+        
+
+
 

@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.controllers.auth_controller import AuthController
 from app.db.get_db import get_db
 from app.interfaces.user_interface import UserInterface
-from app.schemas.auth_schemas import LoginUserRequest, LoginUserResponse, SignupUserRequest
+from app.schemas.auth_schemas import LoginUserRequest, LoginUserResponse, RefreshUserRequest, SignupUserRequest
 from app.schemas.user_schemas import UserResponse
 
 
@@ -45,5 +45,22 @@ async def login_user(
         raise HTTPException(
             status_code=500,
             detail=f"Failed to signup user: {str(e)}"
+        )
+
+@router.post("/refresh")
+async def refresh_user(
+    request: RefreshUserRequest,
+    auth_controller: AuthController = Depends(get_auth_controller)
+) -> LoginUserResponse:
+
+    try: 
+        return auth_controller.refresh_user(request)
+    
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to refresh tokens: {str(e)}"
         )
 

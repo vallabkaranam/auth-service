@@ -36,6 +36,10 @@ class LoginUserRequest(BaseModel):
     password: str = Field(...,
                           description="The password of the user",
                           example="Password123")
+
+class RefreshUserRequest(BaseModel):
+    refresh_token: str = Field(...,
+                               description="SAMPLE.TOKEN")
     
 class TokenData(BaseModel):
     token: str = Field(...,

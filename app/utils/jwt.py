@@ -1,6 +1,7 @@
 from datetime import datetime, timezone, timedelta
 import os
 from dotenv import load_dotenv
+from fastapi import HTTPException
 from jose import jwt
 
 load_dotenv()
@@ -28,4 +29,9 @@ def create_refresh_token(data: dict, expires_delta: timedelta = None):
     to_encode.update({"iat": iat})
     encoded_jwt = jwt.encode(to_encode, REFRESH_TOKEN_SECRET_KEY, algorithm=JWT_ALGORITHM)
     return encoded_jwt, iat, expire
+
+def decode_refresh_token(refresh_token: str):
+    payload = jwt.decode(refresh_token, REFRESH_TOKEN_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+    return payload
+    
 
