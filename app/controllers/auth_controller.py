@@ -4,6 +4,7 @@ from passlib.context import CryptContext
 
 from app.interfaces.user_interface import UserInterface
 from app.schemas.user_schemas import UserResponse
+from app.utils.jwt import create_access_token
 
 
 schema = PasswordValidator()
@@ -62,4 +63,50 @@ class AuthController:
             first_name=new_user.first_name,
             last_name=new_user.last_name
         )
+    
+    def login_user(self, login_payload):
+        """
+        Validates credentials:
+        - validates that email exists
+        - validates that password matches
+
+        Returns:
+        Access Token (JWT)
+        Refresh Token (JWT)
+        Token expiration timestamps
+        """
+
+        attempted_email = login_payload.email
+
+        # fetch user by user email
+        user = self.user_interface.get_user_by_email(attempted_email)
+        if not user:
+            raise HTTPException(
+                status_code=404,
+                # detail="User email not found."
+                detail="Email or password incorrect."
+            )
+        
+        # validate password
+        attempted_password = login_payload.password
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        is_password_matched = pwd_context.verify(attempted_password, user.hashed_password)
+
+        if not is_password_matched:
+            raise HTTPException(
+                status_code=401,
+                # detail="Password does not match"
+                detail="Email or password incorrect."
+            )
+        
+        token_data = {
+            "sub": user.email,
+            "user_id": user.id    
+            }
+        access_token, exp = create_access_token(token_data)
+
+        return {
+            "access_token": access_token,
+            "expiration": exp
+        }
 

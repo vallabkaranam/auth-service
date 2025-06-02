@@ -28,4 +28,13 @@ class SignupUserResponse(BaseModel):
     # created_at: 
     # updated_at:
 
+class LoginUserRequest(BaseModel):
+    email: str = Field(..., 
+                      description="The email of the user",
+                      example="bob.smith@email.com")
+    password: str = Field(...,
+                          description="The password of the user",
+                          example="Password123")
+
+
         
