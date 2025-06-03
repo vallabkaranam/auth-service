@@ -7,14 +7,14 @@ from sqlalchemy.orm import Session
 from app.db.get_db import get_db
 from app.interfaces.user_interface import UserInterface
 from app.schemas.user_schemas import UserResponse
-from app.utils import jwt
+from jose import jwt
 
 load_dotenv()
 
 ACCESS_TOKEN_SECRET_KEY = os.getenv("ACCESS_TOKEN_SECRET_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 def get_current_user(
         token: str = Depends(oauth2_scheme),
@@ -23,7 +23,7 @@ def get_current_user(
     
     credentials_exception = HTTPException(
         status_code=401,
-        detail="Could not validate credentials"
+        detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"}
         )
 

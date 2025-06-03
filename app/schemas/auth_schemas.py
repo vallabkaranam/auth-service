@@ -63,5 +63,9 @@ class LoginUserResponse(BaseModel):
                                 description="Data about the long-living token generated for the user to send to the refresh endpoint when access token expires",
                                 )
 
+class TokenResponse(BaseModel):
+    access_token: str = Field(..., description="The access token for authentication")
+    token_type: str = Field(..., description="The type of token", example="bearer")
+
 
         

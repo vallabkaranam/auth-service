@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routes import auth_routes
+from app.routes import auth_routes, user_routes
 
 app = FastAPI(
     title="Auth & User Service",
@@ -10,6 +10,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(auth_routes.router, prefix="/api/v1/auth", tags=["auth"])
+app.include_router(user_routes.router, prefix="/api/v1/user", tags=["user"])
 
 @app.get("/")
 def read_root():
