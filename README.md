@@ -10,6 +10,7 @@ A production-ready authentication microservice built with FastAPI, featuring sec
   - Password hashing with bcrypt
   - Token expiration and refresh mechanisms
   - Secure password validation and complexity requirements
+  - Google OAuth integration (Coming Soon)
 
 - 👥 **User Management**
 
