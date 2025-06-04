@@ -16,7 +16,6 @@ A production-ready authentication microservice built with FastAPI, featuring sec
   - Email/password registration and login
   - Role-based access control (RBAC)
   - User profile management
-  - Secure password reset flow
 
 - 🛡️ **Security Best Practices**
   - OAuth2 password flow implementation
@@ -34,13 +33,16 @@ A production-ready authentication microservice built with FastAPI, featuring sec
 - **Password Hashing**: bcrypt
 - **API Documentation**: OpenAPI (Swagger)
 - **Environment Management**: python-dotenv
+- **Containerization**: Docker
+- **Database Management**: pgAdmin
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - Python 3.8+
-- PostgreSQL
+- Docker
+- pgAdmin (optional, for database management)
 - pip (Python package manager)
 
 ### Installation
@@ -82,13 +84,25 @@ JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
 JWT_REFRESH_TOKEN_EXPIRE_DAYS=7
 ```
 
-5. Run database migrations:
+5. Start the PostgreSQL database:
+
+```bash
+docker start fastapi-postgres
+```
+
+If you haven't created the PostgreSQL container yet, you can create it with:
+
+```bash
+docker run --name fastapi-postgres -e POSTGRES_PASSWORD=your_password -e POSTGRES_USER=your_user -e POSTGRES_DB=auth_db -p 5432:5432 -d postgres
+```
+
+6. Run database migrations:
 
 ```bash
 alembic upgrade head
 ```
 
-6. Start the server:
+7. Start the server:
 
 ```bash
 uvicorn app.main:app --reload
