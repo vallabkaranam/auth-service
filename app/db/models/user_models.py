@@ -1,5 +1,5 @@
 import enum
-from sqlalchemy import Column, Enum as DBEnum, Integer, String # Renamed Enum to DBEnum to avoid conflict
+from sqlalchemy import Column, Enum as DBEnum, Integer, String
 from app.db.base_class import Base
 
 class UserRole(str, enum.Enum):
