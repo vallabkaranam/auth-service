@@ -1,10 +1,10 @@
 import enum
-from sqlalchemy import Column, Enum, Integer, String
+from sqlalchemy import Column, Enum as DBEnum, Integer, String # Renamed Enum to DBEnum to avoid conflict
 from app.db.base import Base
 
 class UserRole(str, enum.Enum):
-    ADMIN = "admin"
-    USER = "user"
+    ADMIN = "ADMIN"  
+    USER = "USER" 
 
 class User(Base):
     __tablename__ = "users"
@@ -14,7 +14,9 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
-    role = Column(Enum(UserRole, name="userrole"), nullable=True, default=UserRole.USER)
-
-
-    
+    role = Column(
+        DBEnum(UserRole, name="userrole"), # Using DBEnum
+        nullable=False,                 
+        default=UserRole.USER,             # Python-side default
+        server_default=UserRole.USER.value   # Database-level default
+    )
