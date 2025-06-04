@@ -103,7 +103,8 @@ class AuthController:
         
         token_data = {
             "sub": user.email,
-            "user_id": user.id    
+            "user_id": user.id,
+            "role": user.role    
             }
         access_token, access_token_exp, access_token_iat = create_access_token(token_data)
         refresh_token, refresh_token_exp, refresh_token_iat = create_refresh_token(token_data)
@@ -156,7 +157,8 @@ class AuthController:
         
         token_data = {
             "sub": payload.get("sub"),
-            "user_id": payload.get("user_id")
+            "user_id": payload.get("user_id"),
+            "role": payload.get("role")
         }
 
         access_token, access_token_exp, access_token_iat = create_access_token(token_data)

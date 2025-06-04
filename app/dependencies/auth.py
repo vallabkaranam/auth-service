@@ -52,4 +52,27 @@ def get_current_user(
         first_name=user.first_name,
         last_name=user.last_name
     )
+
+def check_admin_role(
+        current_user: UserResponse = Depends(get_current_user)
+) -> UserResponse:
+    try:
+        role = current_user.role
+        
+        if role != "ADMIN":
+            raise HTTPException(
+            status=403,
+            detail="Unauthorized request"
+        )
+
+        return current_user
     
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status=403,
+            detail="Unauthorized request"
+        )
+
+        
