@@ -61,8 +61,8 @@ def check_admin_role(
         
         if role != "ADMIN":
             raise HTTPException(
-            status=403,
-            detail="Unauthorized request"
+            status_code=403,
+            detail="Unauthorized request, you must be an admin"
         )
 
         return current_user
@@ -71,7 +71,7 @@ def check_admin_role(
         raise e
     except Exception as e:
         raise HTTPException(
-            status=403,
+            status_code=403,
             detail="Unauthorized request"
         )
 

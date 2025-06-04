@@ -137,7 +137,7 @@ class AuthController:
         # check that the refresh token is active
         if (now > exp_datetime):
             raise HTTPException(
-                status=401,
+                status_code=401,
                 detail="Refresh token has expired"
             )
         
@@ -145,13 +145,13 @@ class AuthController:
         user = self.user_interface.get_user_by_email(payload.get("sub"))
         if not user:
             raise HTTPException(
-                status=404,
+                status_code=404,
                 detail="Cannot find user"
             )
         
         if user.id != payload.get("user_id"):
             raise HTTPException(
-                status=401,
+                status_code=401,
                 detail="User does not match"
             )
         
