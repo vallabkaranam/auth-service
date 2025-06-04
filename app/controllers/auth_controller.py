@@ -61,6 +61,7 @@ class AuthController:
         return UserResponse(
             id=new_user.id,
             email=new_user.email,
+            role=new_user.role,
             first_name=new_user.first_name,
             last_name=new_user.last_name
         )

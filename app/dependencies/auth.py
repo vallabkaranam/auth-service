@@ -48,6 +48,7 @@ def get_current_user(
     return UserResponse(
         id=user.id,
         email=user.email,
+        role=user.role,
         first_name=user.first_name,
         last_name=user.last_name
     )
