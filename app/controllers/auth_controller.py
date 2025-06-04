@@ -7,7 +7,7 @@ from app.interfaces.user_interface import UserInterface
 from app.schemas.user_schemas import UserResponse
 from app.utils.jwt import create_access_token, create_refresh_token, decode_refresh_token
 
-
+# Password validation schema
 schema = PasswordValidator()
 schema \
     .min(8) \
@@ -17,17 +17,31 @@ schema \
     .has().digits() \
     .has().no().spaces()
 
-
 class AuthController:
+    """
+    Controller handling user authentication operations including signup, login, and token refresh.
+    Implements security best practices for password handling and JWT token management.
+    """
     def __init__(self, user_interface: UserInterface):
         self.user_interface = user_interface
 
     def signup_user(self, user_payload):
         """
-        Checks if email exists in database.
-        If new user, checks password strength.
-        If email and password are valid, encrypt password
-        Then, create a new user with given details.
+        Handles new user registration with security validations.
+        
+        Performs the following checks:
+        1. Verifies email is not already registered
+        2. Validates password meets complexity requirements
+        3. Securely hashes password before storage
+        
+        Args:
+            user_payload: User registration data including email, password, and personal info
+            
+        Returns:
+            UserResponse: Created user data (excluding sensitive information)
+            
+        Raises:
+            HTTPException: If email exists or password doesn't meet requirements
         """
         # check if email exists in database.
         user_with_email = self.user_interface.get_user_by_email(user_payload.email)
@@ -68,16 +82,22 @@ class AuthController:
     
     def login_user(self, login_payload):
         """
-        Validates credentials:
-        - validates that email exists
-        - validates that password matches
-
+        Authenticates user credentials and issues JWT tokens.
+        
+        Process:
+        1. Validates user exists
+        2. Verifies password matches stored hash
+        3. Generates access and refresh tokens
+        
+        Args:
+            login_payload: User login credentials (email and password)
+            
         Returns:
-        Access Token (JWT)
-        Refresh Token (JWT)
-        Token expiration timestamps
+            dict: Access and refresh tokens with their expiration timestamps
+            
+        Raises:
+            HTTPException: If credentials are invalid
         """
-
         attempted_email = login_payload.email
 
         # fetch user by user email
@@ -85,7 +105,6 @@ class AuthController:
         if not user:
             raise HTTPException(
                 status_code=404,
-                # detail="User email not found."
                 detail="Email or password incorrect."
             )
         
@@ -97,7 +116,6 @@ class AuthController:
         if not is_password_matched:
             raise HTTPException(
                 status_code=401,
-                # detail="Password does not match"
                 detail="Email or password incorrect."
             )
         
@@ -124,11 +142,22 @@ class AuthController:
     
     def refresh_user(self, refresh_payload):
         """
-        Validate refresh token.
-        If valid, generate new access token and and refresh token
-        Return new access token and refresh token
+        Issues new access and refresh tokens using a valid refresh token.
+        
+        Process:
+        1. Validates refresh token hasn't expired
+        2. Verifies user still exists and matches token
+        3. Issues new token pair
+        
+        Args:
+            refresh_payload: Current refresh token
+            
+        Returns:
+            dict: New access and refresh tokens with expiration timestamps
+            
+        Raises:
+            HTTPException: If refresh token is invalid or expired
         """
-
         payload = decode_refresh_token(refresh_payload.refresh_token)
         now = datetime.now(timezone.utc)
         exp_timestamp = payload.get("exp")  # This is an int

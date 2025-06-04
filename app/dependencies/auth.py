@@ -11,16 +11,35 @@ from jose import jwt
 
 load_dotenv()
 
+# JWT configuration for token validation
 ACCESS_TOKEN_SECRET_KEY = os.getenv("ACCESS_TOKEN_SECRET_KEY")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
+# OAuth2 scheme for token extraction from Authorization header
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 def get_current_user(
         token: str = Depends(oauth2_scheme),
         db: Session = Depends(get_db)
 ) -> UserResponse:
+    """
+    FastAPI dependency that validates JWT access tokens and returns the authenticated user.
     
+    Process:
+    1. Extracts JWT from Authorization header
+    2. Decodes and validates token signature
+    3. Verifies user exists and matches token claims
+    
+    Args:
+        token: JWT access token from Authorization header
+        db: Database session
+        
+    Returns:
+        UserResponse: Authenticated user data
+        
+    Raises:
+        HTTPException: If token is invalid or user not found
+    """
     credentials_exception = HTTPException(
         status_code=401,
         detail="Could not validate credentials",
@@ -56,6 +75,18 @@ def get_current_user(
 def check_admin_role(
         current_user: UserResponse = Depends(get_current_user)
 ) -> UserResponse:
+    """
+    FastAPI dependency that enforces admin-only access to protected routes.
+    
+    Args:
+        current_user: Authenticated user from get_current_user dependency
+        
+    Returns:
+        UserResponse: User data if admin role is verified
+        
+    Raises:
+        HTTPException: If user is not an admin
+    """
     try:
         role = current_user.role
         
