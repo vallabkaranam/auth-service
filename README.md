@@ -111,7 +111,27 @@ uvicorn app.main:app --reload
 
 The API will be available at `http://localhost:8000`
 
-## 📚 API Documentation
+## ☁️ Cloud Deployment
+
+This service is designed for production deployment on AWS and is fully containerized.
+
+**Platform**: The application is deployed as a container on AWS ECS Fargate, providing a serverless, scalable environment.
+
+**Database**: The production environment uses a managed AWS RDS for PostgreSQL instance for data persistence.
+
+**Container Registry**: The official Docker image is stored in Amazon ECR (Elastic Container Registry) at the following URI:
+
+```
+640168435590.dkr.ecr.us-east-1.amazonaws.com/auth-service
+```
+
+**Networking**: An Application Load Balancer (ALB) manages incoming traffic, routing it to the ECS service running in private subnets.
+
+**Configuration**: Production environment variables (like DATABASE_URL and JWT secrets) are managed securely through the ECS Task Definition, ideally integrated with AWS Secrets Manager.
+
+For a complete, step-by-step guide on the entire cloud deployment process, please refer to the canonical deployment guide.
+
+## �� API Documentation
 
 Interactive API documentation is available at:
 
