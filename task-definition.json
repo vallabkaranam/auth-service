@@ -1,0 +1,37 @@
+{
+    "family": "auth-service",
+    "networkMode": "awsvpc",
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::640168435590:role/ecsTaskExecutionRole"
+    ,
+    "containerDefinitions": [
+        {
+            "name": "auth-service-container",
+            "image": "640168435590.dkr.ecr.us-east-1.amazonaws.com/auth-service:latest",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                {
+                    "name": "DATABASE_URL",
+                    "value": "postgresql://postgres:secure-password@auth-service-db.cjw4c0oykwt4.us-east-1.rds.amazonaws.com:5432/auth_db"
+                }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/auth-service",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ]
+}

@@ -6,4 +6,7 @@ psycopg2-binary
 python-dotenv
 bcrypt
 pydantic
+password_validator
 python-jose[cryptography]
+passlib
+python-multipart
