@@ -18,30 +18,30 @@
                     "protocol": "tcp"
                 }
             ],
-            "environment": [
+            "secrets": [
                 {
                     "name": "DATABASE_URL",
-                    "value": "postgresql://postgres:secure-password@auth-service-db.cjw4c0oykwt4.us-east-1.rds.amazonaws.com:5432/auth_db"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:DATABASE_URL::"
                 },
                 {
                     "name": "ACCESS_TOKEN_SECRET_KEY",
-                    "value": "your_production_access_token_secret_key_here"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:ACCESS_TOKEN_SECRET_KEY::"
                 },
                 {
                     "name": "REFRESH_TOKEN_SECRET_KEY",
-                    "value": "your_production_refresh_token_secret_key_here"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:REFRESH_TOKEN_SECRET_KEY::"
                 },
                 {
                     "name": "JWT_ALGORITHM",
-                    "value": "HS256"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:JWT_ALGORITHM::"
                 },
                 {
                     "name": "JWT_ACCESS_TOKEN_EXPIRE_MINUTES",
-                    "value": "30"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:JWT_ACCESS_TOKEN_EXPIRE_MINUTES::"
                 },
                 {
                     "name": "JWT_REFRESH_TOKEN_EXPIRE_DAYS",
-                    "value": "7"
+                    "valueFrom": "arn:aws:secretsmanager:us-east-1:640168435590:secret:auth-service/prod/env-jJgSSt:JWT_REFRESH_TOKEN_EXPIRE_DAYS::"
                 }
             ],
             "logConfiguration": {
