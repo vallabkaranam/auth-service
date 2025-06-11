@@ -2,6 +2,8 @@
 
 A production-ready authentication microservice built with FastAPI, featuring secure JWT-based authentication, role-based access control, and modern security practices. Designed for seamless integration into larger systems, this service provides a robust foundation for user management and authentication.
 
+http://auth-service-alb-241967298.us-east-1.elb.amazonaws.com/docs
+
 ## ✨ Key Features
 
 - 🔒 **Secure Authentication**
@@ -101,7 +103,7 @@ If you haven't created the PostgreSQL container yet, you can create it with:
 docker run --name fastapi-postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=auth_db -p 5432:5432 -d postgres
 ```
 
-_(Note: The credentials here match the example \DATABASE_URL`.)_
+*(Note: The `-e POSTGRES_USER=user` and `-e POSTGRES_PASSWORD=password` flags are intentionally set to match the example `DATABASE_URL` from your `.env` file. This ensures your application can connect to the local database seamlessly.)*
 
 6. Run database migrations:
 
