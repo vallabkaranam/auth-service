@@ -26,7 +26,7 @@ A production-ready authentication microservice built with FastAPI, featuring sec
 
 ## 🛠️ Tech Stack
 
-- **Framework**: FastAPI (Python 3.8+)
+- **Framework**: FastAPI (Python 3.11+)
 - **Database**: PostgreSQL
 - **ORM**: SQLAlchemy
 - **Migrations**: Alembic
@@ -37,11 +37,13 @@ A production-ready authentication microservice built with FastAPI, featuring sec
 - **Containerization**: Docker
 - **Database Management**: pgAdmin
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Local Development)
+
+This section guides you through setting up and running the service on your local machine for development and testing.
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.11+
 - Docker
 - pgAdmin (optional, for database management)
 - pip (Python package manager)
@@ -74,6 +76,8 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+Update the .env file with your local database credentials and JWT secrets. The default values should work with the provided Docker setup.
+
 Required environment variables:
 
 ```env
@@ -94,8 +98,10 @@ docker start fastapi-postgres
 If you haven't created the PostgreSQL container yet, you can create it with:
 
 ```bash
-docker run --name fastapi-postgres -e POSTGRES_PASSWORD=your_password -e POSTGRES_USER=your_user -e POSTGRES_DB=auth_db -p 5432:5432 -d postgres
+docker run --name fastapi-postgres -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=auth_db -p 5432:5432 -d postgres
 ```
+
+_(Note: The credentials here match the example \DATABASE_URL`.)_
 
 6. Run database migrations:
 
@@ -113,21 +119,18 @@ The API will be available at `http://localhost:8000`
 
 ## ☁️ Cloud Deployment
 
-This service is designed for production deployment on AWS and is fully containerized.
+This service is architected for a secure and scalable production deployment on AWS.
 
-**Platform**: The application is deployed as a container on AWS ECS Fargate, providing a serverless, scalable environment.
+**Platform**: The application is deployed as a container on **AWS ECS Fargate**, providing a serverless compute environment.
 
-**Database**: The production environment uses a managed AWS RDS for PostgreSQL instance for data persistence.
+**Database**: The production environment uses a managed **AWS RDS for PostgreSQL** instance, running in private subnets for security.
 
-**Container Registry**: The official Docker image is stored in Amazon ECR (Elastic Container Registry) at the following URI:
+**Container Registry**: The official Docker image is stored in **Amazon ECR (Elastic Container Registry)** at the following URI:
+`640168435590.dkr.ecr.us-east-1.amazonaws.com/auth-service`
 
-```
-640168435590.dkr.ecr.us-east-1.amazonaws.com/auth-service
-```
+**Networking**: An **Application Load Balancer (ALB)** manages incoming web traffic, routing it to the ECS service. The ALB resides in public subnets, while the ECS tasks run in private subnets.
 
-**Networking**: An Application Load Balancer (ALB) manages incoming traffic, routing it to the ECS service running in private subnets.
-
-**Configuration**: Production environment variables (like DATABASE_URL and JWT secrets) are managed securely through the ECS Task Definition, ideally integrated with AWS Secrets Manager.
+**Configuration**: All production environment variables (like `DATABASE_URL` and JWT secrets) are managed securely through **AWS Secrets Manager** and injected into the ECS Task at runtime. The task definition itself contains no plaintext secrets.
 
 For a complete, step-by-step guide on the entire cloud deployment process, please refer to the canonical deployment guide.
 
@@ -169,7 +172,7 @@ auth-service/
 
    - User submits email and password
    - Password is validated and hashed
-   - User record is created
+   - User record is created in the database
    - Access and refresh tokens are issued
 
 2. **Login**
@@ -191,7 +194,7 @@ This project demonstrates several important aspects of modern backend developmen
 - **Security First**: Implements industry-standard security practices and token-based authentication
 - **Scalability**: Built with performance and scalability in mind using FastAPI and SQLAlchemy
 - **Maintainability**: Clean architecture with clear separation of concerns
-- **Production Ready**: Includes proper error handling, logging, and security measures
+- **Production Ready**: Includes proper error handling, logging, and a deployment model that separates configuration from code
 
 ## 📝 License
 
