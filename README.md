@@ -2,7 +2,7 @@
 
 A production-ready authentication microservice built with FastAPI, featuring secure JWT-based authentication, role-based access control, and modern security practices. Designed for seamless integration into larger systems, this service provides a robust foundation for user management and authentication.
 
-http://auth-service-alb-241967298.us-east-1.elb.amazonaws.com/docs
+http://auth-service-alb-241967298.us-east-1.elb.amazonaws.com/docs (service was spun down as of July 1, 2025, to preserve resources — read more [here](https://medium.com/@vallab.karanam/how-i-brought-my-aws-ecs-bill-from-45-to-almost-0-without-sacrificing-my-architecture-aeb75058af8c))
 
 ## ✨ Key Features
 
